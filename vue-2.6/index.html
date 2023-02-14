@@ -13,6 +13,7 @@
 </head>
 <body>
 <div id="app">
+    <h3>Basic</h3>
     <span v-text="person.name"></span>
     <p>
         {{ greeting(person.name) }}
@@ -22,6 +23,9 @@
         <button @click="add">add</button>
         <button v-on:click="subtract">substract</button>
     </div>
+
+    <hr>
+    <h3>IME input</h3>
     <ime v-model="inputText"></ime>
     <div>
         <!--
@@ -54,6 +58,13 @@
     </div>
     <div>
         <a :href="getYoutubeChannel('@gamegalpi')">@gamegalpi</a>
+    </div>
+
+    <hr>
+    <h3>append component</h3>
+    <div>
+        <button @click="testMethods">methods</button>
+        <button @click="testComputed">computed</button>
     </div>
 </div>
 <script type="module" src="/src/main.js"></script>

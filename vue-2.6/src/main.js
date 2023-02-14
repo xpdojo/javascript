@@ -22,6 +22,7 @@ let app = new Vue({
         inputText: 'hello',
         type: 'text',
         link: 'https://www.youtube.com/',
+        computedMessage: 'computed message',
     },
     components: {
         'ime': Vue.component('ime'),
@@ -42,6 +43,25 @@ let app = new Vue({
         },
         updateInputText(event) {
             this.inputText = event.target.value;
+        },
+
+        testMethods() {
+            // 함수 형태
+            console.log(this.getMethodsDate());
+        },
+        testComputed() {
+            // 함수 형태도 아님
+            console.log(this.getComputedDate);
+        },
+        getMethodsDate() {
+            // 호출된 시각 반환
+            return new Date().toLocaleString();
+        }
+    },
+    computed: {
+        getComputedDate() {
+            // 맨처음 호출된 시각 캐싱 후 반환, 이후 호출 시 캐싱된 값을 반환
+            return new Date().toLocaleString();
         }
     }
 });
