@@ -60,8 +60,6 @@ v-model 대신 v-bind와 v-on을 사용한다.
 # 참조
 
 - [Vue.js 2.x Guide](https://v2.vuejs.org/v2/guide/)
-  - [한국어 번역](https://ssafy-vue.xyz/v2/guide/index.html)
-    - [한국어 페이지에 문제가 있어서](https://github.com/vuejs-kr/kr.vuejs.org/issues/227) 컨트리뷰터가 개인적으로 호스팅하는 듯. 언제 없어질지 모르기 때문에 영문 문서 참조.
   - [Vue.js 2.x API](https://v2.vuejs.org/v2/api/)
 - [Vue.js 2 유튜브 강의](https://www.youtube.com/playlist?list=PLB7CpjPWqHOtYP7P_0Ls9XNed0NLvmkAh) - 코지 코더
 - [Can I use ... Vue 3?](https://youtu.be/Z0OG00YQeMg) - 장기효(캡틴판교), NAVER | FEConf Korea 2020
