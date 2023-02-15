@@ -216,15 +216,55 @@
     <h2>리스트 렌더링 (List Rendering) - <code>v-for</code></h2>
     <a href="https://v2.vuejs.org/v2/guide/list.html">List Rendering</a>
     <br>
-    <span>여러 HTML 엘리먼트(0 ~ infinite)를 추가하거나 삭제할 경우 사용할 수 있다.</span>
-    <div v-for="(value, name, index) in people" :key="value.id">
-        {{index}} {{name}}: {{ value.name }} - {{ value.age }}
-    </div>
-    <div>맨 위 todo list 예제 참조</div>
-    <br>
-    <a href="https://v2.vuejs.org/v2/guide/list.html#v-for-with-v-if">공식 문서 참조(v-for with v-if)</a>
-    <p><code>v-if</code> 와 <code>v-for</code> 를 동시에 사용하는 것을 <strong>추천하지 않습니다.</strong> <a href="https://v2.vuejs.org/v2/style-guide/">스타일가이드</a>에서 자세한 내용을 확인하세요.</p>
-    <p>동일한 노드에 두가지 모두 있다면, <code>v-for</code>가 <code>v-if</code>보다 높은 우선순위를 갖습니다. 즉, <code>v-if</code>는 루프가 반복될 때마다 실행됩니다. 이는 <em>일부</em> 항목만 렌더링 하려는 경우 유용합니다.</p>
+
+    <section>
+        <span>여러 HTML 엘리먼트(0 ~ infinite)를 추가하거나 삭제할 경우 사용할 수 있다.</span>
+        <div v-for="(value, name, index) in people" :key="value.id">
+            {{index}} {{name}}: {{ value.name }} - {{ value.age }}
+        </div>
+        <div>맨 위 todo list 예제 참조</div>
+        <br>
+        <a href="https://v2.vuejs.org/v2/guide/list.html#v-for-with-v-if">공식 문서 참조(v-for with v-if)</a>
+        <p><code>v-if</code> 와 <code>v-for</code> 를 동시에 사용하는 것을 <strong>추천하지 않습니다.</strong> <a href="https://v2.vuejs.org/v2/style-guide/">스타일가이드</a>에서 자세한 내용을 확인하세요.</p>
+        <p>동일한 노드에 두가지 모두 있다면, <code>v-for</code>가 <code>v-if</code>보다 높은 우선순위를 갖습니다. 즉, <code>v-if</code>는 루프가 반복될 때마다 실행됩니다. 이는 <em>일부</em> 항목만 렌더링 하려는 경우 유용합니다.</p>
+    </section>
+
+    <section>
+        <h3>key를 사용해야 한다</h3>
+        <p>Vue가 <code>v-for</code>에서 렌더링된 엘리먼트 목록을 갱신할 때 기본적으로 “in-place patch” 전략을 사용합니다. 데이터 항목의 순서가 변경된 경우 항목의 순서와 일치하도록 DOM 요소를 이동하는 대신 Vue는 각 요소를 적절한 위치에 패치하고 해당 인덱스에서 렌더링할 내용을 반영하는지 확인합니다. 이것은 Vue 1.x의 <code>track-by=$index</code>의 동작과 유사합니다.</p>
+        <p>이 기본 모드는 효율적이지만 <strong>목록의 출력 결과가 하위 컴포넌트 상태 또는 임시 DOM 상태(예: 폼 input)에 의존하지 않는 경우에</strong> 적합합니다.</p>
+        <p>Vue에서 개별 DOM 노드들을 추적하고 기존 엘리먼트를 재사용, 재정렬하기 위해서 <code>v-for</code>의 각 항목들에 고유한 key 속성을 제공해야 합니다. <code>key</code>에 대한 이상적인 값은 각 항목을 식별할 수 있는 고유한 ID입니다. 이 특별한 속성은 1.x 버전의 <code>track-by</code>와 거의 비슷하지만 속성처럼 작동하기 때문에 <code>v-bind</code>를 사용하여 동적 값에 바인딩 해야합니다. (여기서는 약어를 이용합니다.)</p>
+        <p>과일에 개수를 입력 후 shift 해보면 과일 순서는 바뀌는데 개수는 바뀌지 읺는다.</p>
+        <ul>
+            <li v-for="fruitName in fruits">
+                {{ fruitName }} : <input type="number"/> 개
+            </li>
+        </ul>
+        <p>과일에 개수를 입력 후 shift 해보면 과일 순서와 개수 모두 잘 바뀐다. <code>v-bind:key</code>를 입력하는 것만으로도 잘 동작한다.</p>
+        <ul>
+            <li v-for="fruitName in fruits" v-bind:key="fruitName">
+                {{ fruitName }} : <input type="number"/> 개
+            </li>
+        </ul>
+        <button v-on:click="shift">shift</button>
+        <ul>
+            <li>
+                <a href="https://v2.vuejs.org/v2/guide/list.html#Maintaining-State">공식 문서</a>
+            </li>
+            <li>
+                <a href="https://goodteacher.tistory.com/525">위 과일 예제 참조</a> - 은서파
+            </li>
+            <li>
+                <a href="https://goodteacher.tistory.com/525">key(없음, 중복, 있음) 성능 테스트</a> - kamang
+                <ul>
+                    <li>
+                        결론: <code>key</code>를 유니크하게 사용하는 것이 성능으로도 가장 좋다.
+                        <code>index</code>는 사용하지도 말자.
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </section>
 </section>
 
 <hr>
@@ -481,6 +521,21 @@
                 {id: 'P1', name: 'John Doe', age: 20},
                 {id: 'P2', name: 'Jane Doe', age: 30},
             ],
+            fruits: [
+                'apple',
+                'banana',
+                'orange',
+            ],
+        },
+        methods: {
+            shift() {
+                /**
+                 * 배열 변경 감지
+                 *
+                 * @see <a href="https://v2.vuejs.org/v2/guide/list.html#Array-Change-Detection">Array Change Detection</a>
+                 */
+                this.fruits.push(this.fruits.shift());
+            }
         }
     });
 
