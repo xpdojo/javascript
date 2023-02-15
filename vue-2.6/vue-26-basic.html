@@ -179,10 +179,12 @@
     <h2>CSS</h2>
 
     <h3 v-bind:class="{red: isRed, large: isLarge}">클래스 바인딩 (Class Binding)</h3>
+    <p><code>v-bind:class="{red: isRed, large: isLarge}"</code></p>
     <button @click="toggleRed">Toggle Red</button>
     <button @click="toggleLarge">Toggle Large</button>
 
     <h3 :style="{color: title.color, fontSize: title.size + 'px'}">스타일 바인딩 (Style Binding)</h3>
+    <p><code>v-bind:style="{color: title.color, fontSize: title.size + 'px'}"</code></p>
     <button @click="toggleTitleStyle">Toggle Title</button>
 </section>
 
