@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- https://v2.vuejs.org/v2/guide/installation.html -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0/dist/vue.js"></script>
+    <!--production 라이브러리는 디버깅이 어렵다-->
+    <!--<script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>-->
+
+    <title>Vue.js 2.6 Demo</title>
+
+    <style>
+        code {
+            color: #d63200;
+            background-color: #f8f8f8;
+            padding: 3px 5px;
+            border-radius: 2px;
+        }
+
+        .red {
+            color: #FF0000FF;
+        }
+
+        .large {
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1>Vue.js v2.6 자습서</h1>
+    <article>
+        <a href="https://github.com/vuejs-kr/kr.vuejs.org/issues/227">한국어 문서는 공식 링크가 깨져서</a> 영문 문서로 링크 걸었습니다.
+        임시로 <a href="https://ssafy-vue.xyz/v2/guide/index.html">컨트리뷰터가 호스팅한 사이트</a>를 참조할 수 있습니다.
+    </article>
+</div>
+
+<hr>
+
+<div id="todo-list-example">
+    <h3>Todo 관리</h3>
+    <a href="https://v2.vuejs.org/v2/guide/list.html#v-for-with-a-Component">공식 문서</a><br>
+
+    <form v-on:submit.prevent="addNewTodo">
+        <label for="new-todo">Add a todo</label>
+        <input
+                v-model="newTodoText"
+                id="new-todo"
+                placeholder="E.g. Feed the cat"
+        >
+        <button>Add</button>
+    </form>
+    <ul>
+        <li
+                is="todo-item"
+                v-for="(todo, index) in todos"
+                v-bind:key="todo.id"
+                v-bind:title="todo.title"
+                v-on:remove="todos.splice(index, 1)"
+        ></li>
+    </ul>
+</div>
+
+<div id="app">
+
+    <hr>
+
+    <section>
+        <h2>Basic data binding</h2>
+
+        <h3>텍스트 바인딩</h3>
+        <ul>
+            <li>
+                <a href="https://vuejs.org/guide/essentials/template-syntax.html#text-interpolation">Text Interpolation(double curly braces)</a>를
+                사용해서 텍스트를 표시하는 방법<br>
+                {{ greeting(person.fullName) }}
+            </li>
+            <li>
+                <div>
+                    <code>v-text</code>를 사용해서 텍스트를 표시하는 방법
+                </div>
+                <span v-text="person.fullName"></span><br>
+            </li>
+        </ul>
+
+        <h3>이벤트 바인딩</h3>
+        age: {{ person.age }}
+        <button @click="add">add</button>
+        <button v-on:click="subtract">substract</button>
+    </section>
+
+    <hr>
+
+    <section>
+        <section>
+            <h2>input</h2>
+            <ol>
+                <li>
+                    <code>v-bind</code>:
+                    Vue 인스턴스의 데이터 속성을 해당 HTML 요소에 연결할 때 사용한다.
+                    속성이 colon(:)으로만 시작하면 앞에 <code>v-bind</code>가 생략된 것.
+                </li>
+                <li>
+                    <code>v-on</code>:
+                    해당 HTML 요소의 이벤트를 뷰 인스턴스의 로직과 연결할 때 사용한다.
+                </li>
+                <li>
+                    <code>v-model</code>(<code>v-bind</code> + <code>v-on</code>):
+                    매번 사용자가 일일이 <code>v-bind</code>와 <code>v-on</code> 속성을 다 지정해 주지 않아도 좀 더 편하게 개발할 수 있게 고안된 문법<br>
+                    - <code>input</code>, <code>textarea</code>는 <code>v-bind:value</code> + <code>v-on:input</code>의 조합<br>
+                    - <code>select</code>는 <code>v-bind:value</code> + <code>v-on:change</code>의 조합<br>
+                    - <code>checkbox</code>, <code>radio</code>는 <code>v-bind:checked</code> + <code>v-on:change</code>의 조합
+                </li>
+            </ol>
+            <!--v-on:input 이벤트를 지정하지 않으면 값이 Vue 인스턴스에 전달되지 않음-->
+            <div>
+                <!--단방향 one-way-->
+                <input v-bind:type="type" :value="inputText">
+                - <code>v-on</code>을 설정하지 않을 경우 양방향 바인딩이 되지 않는다.
+                <br>
+                <!--양방향 two-way-->
+                <input v-bind:type="type" :value="inputText" v-on:input="updateInputText">
+                - 직접 <code>v-bind</code>, <code>v-on</code> 사용
+                <br>
+                <input v-bind:type="type" v-model="inputText">
+                - <code>v-model</code>의 경우 IME(Chinese, Japanese, Korean etc.) 입력에 대해서
+                한 글자에 대한 입력이 끝나야만 바인딩이 되기 때문에 <code>v-on:input</code>을 사용하는 것이 좋다.
+                - <a href="https://vuejs.org/guide/essentials/forms.html#text">공식 문서</a>
+                <br>
+                <ime v-model="inputText"></ime>
+                - 커스텀 컴포넌트를 생성해서 해결할 수도 있다. - <a href="https://joshua1988.github.io/web-development/vuejs/v-model-usage/">캡틴판교
+                참조</a>
+                <br>
+            </div>
+        </section>
+
+        <section>
+            <h3>a.href 링크 관리</h3>
+            <a :href="getYoutubeChannel('@gamegalpi')">@gamegalpi</a>
+        </section>
+    </section>
+
+    <hr>
+
+    <section>
+        <h2>methods vs. computed</h2>
+        <span>브라우저 console.log에서 확인</span>
+        <div>
+            <button @click="testMethods">methods</button>
+            - <code>methods</code>는 호출될 때마다 함수 로직 실행하기 때문에 현재 시각 반환<br>
+            <button @click="testComputed">computed</button>
+            - <code>computed</code>는 처음 호출되었을 때 결과를 캐싱하기 때문에 처음 호출된 시각 반환<br>
+        </div>
+    </section>
+
+    <section>
+        <h2>watch</h2>
+        <div>
+            <code>watch</code>를 걸면 데이터가 변경되는 것을 감지하고 다른 데이터를 함께 변경할 수 았다.
+            아래의 경우 <code>firstName</code> 혹은 <code>lastName</code>이 변경되면 <code>fullName</code>이 변경된다.
+        </div>
+        <br>
+
+        my name: <span v-text="person.fullName"></span>
+        <br>
+        <label for="firstName">First Name</label>
+        <input type="text" v-model="person.firstName"><br>
+        <label for="lastName">Last Name</label>
+        <input type="text" v-model="person.lastName"><br>
+    </section>
+
+    <hr>
+
+    <section>
+        <h2>CSS</h2>
+
+        <h3 v-bind:class="{red: isRed, large: isLarge}">클래스 바인딩 (Class Binding)</h3>
+        <button @click="toggleRed">Toggle Red</button>
+        <button @click="toggleLarge">Toggle Large</button>
+
+        <h3 :style="{color: title.color, fontSize: title.size + 'px'}">스타일 바인딩 (Style Binding)</h3>
+        <button @click="toggleTitleStyle">Toggle Title</button>
+    </section>
+
+    <hr>
+
+    <section>
+        <h2>조건부 렌더링 (Conditional Rendering) - <code>v-if</code></h2>
+        <a href="https://v2.vuejs.org/v2/guide/conditional.html">Conditional Rendering</a>
+        <br>
+        <span>단일 HTML 엘리먼트의 노출 여부를 결정할 때 사용할 수 있다.</span>
+        <br>
+        <button @click="toggleShow">Toggle Show</button><br>
+        <!--v-else-if, v-else-->
+        <div v-if="show">
+            <hr>
+            <code>v-if</code>는 DOM에 추가/삭제
+        </div>
+        <div v-show="show">
+            <code>v-show</code>는 <code>display:none</code> 유무
+        </div>
+        <a href="https://v2.vuejs.org/v2/guide/conditional.html#v-if-vs-v-show">공식 문서 참조(v-if vs v-show)</a>
+        <p><code>v-if</code>는 조건부 블럭 안의 이벤트 리스너와 자식 컴포넌트가 토글하는 동안 적절하게 제거되고 다시 만들어지기 때문에 “진짜” 조건부 렌더링 입니다</p>
+        <p><code>v-if</code>는 또한 <strong>게으릅니다</strong>. 초기 렌더링에서 조건이 거짓인 경우 아무것도 하지 않습니다. 조건 블록이 처음으로 참이 될 때 까지 렌더링 되지 않습니다.</p>
+        <p>비교해보면, <code>v-show</code>는 훨씬 단순합니다. CSS 기반 토글만으로 초기 조건에 관계 없이 엘리먼트가 항상 렌더링 됩니다.</p>
+        <p>일반적으로 <code>v-if</code>는 토글 비용이 높고 <code>v-show</code>는 초기 렌더링 비용이 더 높습니다. 매우 자주 바꾸기를 원한다면 <code>v-show</code>를, 런타임 시 조건이 바뀌지 않으면 <code>v-if</code>를 권장합니다.</p>
+    </section>
+
+    <hr>
+
+    <section>
+        <h2>리스트 렌더링 (List Rendering) - <code>v-for</code></h2>
+        <a href="https://v2.vuejs.org/v2/guide/list.html">List Rendering</a>
+        <br>
+        <span>여러 HTML 엘리먼트(0 ~ infinite)를 추가하거나 삭제할 경우 사용할 수 있다.</span>
+        <div v-for="(value, name, index) in people" :key="value.id">
+            {{index}} {{name}}: {{ value.name }} - {{ value.age }}
+        </div>
+        <div>맨 위 todo list 예제 참조</div>
+        <br>
+        <a href="https://v2.vuejs.org/v2/guide/list.html#v-for-with-v-if">공식 문서 참조(v-for with v-if)</a>
+        <p><code>v-if</code> 와 <code>v-for</code> 를 동시에 사용하는 것을 <strong>추천하지 않습니다.</strong> <a href="https://v2.vuejs.org/v2/style-guide/">스타일가이드</a>에서 자세한 내용을 확인하세요.</p>
+        <p>동일한 노드에 두가지 모두 있다면, <code>v-for</code>가 <code>v-if</code>보다 높은 우선순위를 갖습니다. 즉, <code>v-if</code>는 루프가 반복될 때마다 실행됩니다. 이는 <em>일부</em> 항목만 렌더링 하려는 경우 유용합니다.</p>
+    </section>
+
+</div>
+
+<!--<script type="module" src="/app.js"></script>-->
+<script>
+    /**
+     * IME 문제 해결방안
+     *
+     * <p>
+     *     component는 vue instance 생성하기 전에 먼저 등록해야 한다.
+     * </p>
+     *
+     * @see <a href="https://joshua1988.github.io/web-development/vuejs/v-model-usage/#v-model-%EB%AC%B8%EB%B2%95%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%B4%EC%84%9C-%ED%95%9C%EA%B5%AD%EC%96%B4%EB%A5%BC-%EC%B2%98%EB%A6%AC%ED%95%A0-%EC%88%9C-%EC%97%86%EC%9D%84%EA%B9%8C%EC%9A%94">캡틴판교</a>
+     */
+// Vue.component(tagName, options): 전역 컴포넌트 등록
+// https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name
+// W3C 규칙(모두 소문자, 하이픈 포함)을 지켜야 하는 건 아니지만 권장
+    Vue.component('ime', {
+        template: `<input v-bind:value="value" v-on:input="updateInput">`,
+        props: ['value'],
+        methods: {
+            updateInput(event) {
+                this.$emit('input', event.target.value);
+            }
+        }
+    });
+
+    /**
+     * Demo
+     */
+    let app = new Vue({
+        el: '#app',
+        // https://v2.vuejs.org/v2/api/#data
+        data: {
+            person: {
+                firstName: '',
+                lastName: '',
+                fullName: 'Stranger',
+                age: 20,
+            },
+            people: [
+                {id: 'P1', name: 'John Doe', age: 20},
+                {id: 'P2', name: 'Jane Doe', age: 30},
+            ],
+            inputText: 'hello',
+            type: 'text',
+            link: 'https://www.youtube.com/',
+            computedMessage: 'computed message',
+            isRed: false,
+            isLarge: false,
+            title: {
+                color: '#000',
+                size: 18,
+            },
+            show: false,
+        },
+        components: {
+            'ime': Vue.component('ime'),
+        },
+        // https://v2.vuejs.org/v2/api/#methods
+        methods: {
+            greeting: function (name) {
+                return `Hello ${name}`;
+            },
+            // function 키워드를 생략할 수 있다.
+            add() {
+                return this.person.age++;
+            },
+            subtract() {
+                return this.person.age--;
+            },
+            getYoutubeChannel(channel) {
+                return this.link + channel;
+            },
+            updateInputText(event) {
+                this.inputText = event.target.value;
+            },
+
+            testMethods() {
+                // 함수 형태
+                console.log(this.getMethodsDate());
+            },
+            testComputed() {
+                // 함수 형태도 아님
+                console.log(this.getComputedDate);
+            },
+            getMethodsDate() {
+                // 호출된 시각 반환
+                return new Date().toLocaleString();
+            },
+            /**
+             * 클래스 바인딩
+             * https://vuejs.org/guide/essentials/class-and-style.html
+             */
+            toggleRed() {
+                if (this.isRed) {
+                    this.isRed = false;
+                    return;
+                }
+                this.isRed = true;
+            },
+            toggleLarge() {
+                if (this.isLarge) {
+                    this.isLarge = false;
+                    return;
+                }
+                this.isLarge = true;
+            },
+            /**
+             * 스타일 바인딩
+             * https://vuejs.org/guide/essentials/class-and-style.html
+             */
+            toggleTitleStyle() {
+                if (this.title.size === 18) {
+                    this.title.color = '#FF0000FF';
+                    this.title.size = 30
+                } else {
+                    this.title.color = '#000';
+                    this.title.size = 18
+                }
+            },
+            toggleShow() {
+                this.show = !this.show;
+            },
+        },
+        /**
+         * https://v2.vuejs.org/v2/api/#computed
+         * https://v2.vuejs.org/v2/guide/computed.html#Computed-Properties
+         */
+        computed: {
+            getComputedDate() {
+                // 맨처음 호출된 시각 캐싱 후 반환, 이후 호출 시 캐싱된 값을 반환
+                return new Date().toLocaleString();
+            }
+        },
+        /**
+         * https://v2.vuejs.org/v2/api/#watch
+         * https://v2.vuejs.org/v2/guide/computed.html#Watchers
+         *
+         * 대부분의 경우 computed 속성이 더 적합하지만 사용자가 만든 감시자가 필요한 경우가 있습니다.
+         * 그래서 Vue는 watch 옵션을 통해 데이터 변경에 반응하는 보다 일반적인 방법을 제공합니다.
+         * 이는 데이터 변경에 대한 응답으로 비동기식 또는 시간이 많이 소요되는 조작을 수행하려는 경우에 가장 유용합니다.
+         */
+        watch: {
+            'person.firstName': function (newValue, oldValue) {
+                console.log(newValue, oldValue);
+                this.person.fullName = newValue + ' ' + this.person.lastName;
+            },
+            'person.lastName': function (newValue, oldValue) {
+                console.log(newValue, oldValue);
+                this.person.fullName = this.person.firstName + ' ' + newValue;
+            }
+        }
+    });
+
+    /**
+     * TODO 리스트 예제
+     *
+     * @see <a href="https://v2.vuejs.org/v2/guide/list.html#v-for-with-a-Component">공식 문서 예제</a>
+     */
+    Vue.component('todo-item', {
+        template: '\
+    <li>\
+      {{ title }}\
+      <button v-on:click="$emit(\'remove\')">Remove</button>\
+    </li>\
+  ',
+        props: ['title']
+    })
+
+    new Vue({
+        el: '#todo-list-example',
+        data: {
+            newTodoText: '',
+            todos: [
+                {
+                    id: 1,
+                    title: 'Do the dishes',
+                },
+                {
+                    id: 2,
+                    title: 'Take out the trash',
+                },
+                {
+                    id: 3,
+                    title: 'Mow the lawn'
+                }
+            ],
+            nextTodoId: 4
+        },
+        methods: {
+            addNewTodo: function () {
+                this.todos.push({
+                    id: this.nextTodoId++,
+                    title: this.newTodoText
+                })
+                this.newTodoText = ''
+            }
+        }
+    });
+
+</script>
+<script>
+    // for chrome devtool
+    // https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=en
+    // https://devtools.vuejs.org/guide/faq.html#when-opening-an-html-file-directly
+    // CDN 방식이라면 minify되지 않은 파일 사용해야 한다.
+    // Extension 설치 후 브라우저를 재시작한다.
+    Vue.config.devtools = true;
+</script>
+</body>
+</html>
