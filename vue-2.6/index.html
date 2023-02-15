@@ -14,9 +14,13 @@
 <body>
 <div id="app">
     <h3>Basic</h3>
-    <span v-text="person.name"></span>
+    <span v-text="person.fullName"></span>
     <p>
-        {{ greeting(person.name) }}
+        {{ greeting(person.fullName) }}<br>
+        <label for="firstName">First Name</label>
+        <input type="text" v-model="person.firstName"><br>
+        <label for="lastName">Last Name</label>
+        <input type="text" v-model="person.lastName"><br>
     </p>
     <div>
         {{ person.age }}
@@ -61,11 +65,15 @@
     </div>
 
     <hr>
-    <h3>append component</h3>
+    <h3>methods vs. computed</h3>
     <div>
         <button @click="testMethods">methods</button>
         <button @click="testComputed">computed</button>
     </div>
+
+    <hr>
+    <h3></h3>
+
 </div>
 <script type="module" src="/src/main.js"></script>
 <script>
