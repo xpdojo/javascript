@@ -29,6 +29,12 @@ let app = new Vue({
         type: 'text',
         link: 'https://www.youtube.com/',
         computedMessage: 'computed message',
+        isRed: false,
+        isLarge: false,
+        title: {
+            color: '#000',
+            size: 18,
+        }
     },
     components: {
         'ime': Vue.component('ime'),
@@ -63,7 +69,38 @@ let app = new Vue({
         getMethodsDate() {
             // 호출된 시각 반환
             return new Date().toLocaleString();
-        }
+        },
+        /**
+         * 클래스 바인딩
+         * https://vuejs.org/guide/essentials/class-and-style.html
+         */
+        toggleRed() {
+            if (this.isRed) {
+                this.isRed = false;
+                return;
+            }
+            this.isRed = true;
+        },
+        toggleLarge() {
+            if (this.isLarge) {
+                this.isLarge = false;
+                return;
+            }
+            this.isLarge = true;
+        },
+        /**
+         * 스타일 바인딩
+         * https://vuejs.org/guide/essentials/class-and-style.html
+         */
+        toggleTitleStyle() {
+            if (this.title.size === 18) {
+                this.title.color = '#FF0000FF';
+                this.title.size = 30
+            } else {
+                this.title.color = '#000';
+                this.title.size = 18
+            }
+        },
     },
     /**
      * https://v2.vuejs.org/v2/api/#computed

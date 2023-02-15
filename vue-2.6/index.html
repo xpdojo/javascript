@@ -10,10 +10,25 @@
     <!--<script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>-->
 
     <title>Vue.js 2.6 Demo</title>
+
+    <style>
+        .red {
+            color: #FF0000FF;
+        }
+        .large {
+            font-size: 30px;
+        }
+    </style>
 </head>
 <body>
 <div id="app">
-    <h3>Basic</h3>
+    <h3 v-bind:class="{red: isRed, large: isLarge}">Basic</h3>
+    <button @click="toggleRed">Toggle Red</button>
+    <button @click="toggleLarge">Toggle Large</button>
+
+    <div :style="{color: title.color, fontSize: title.size + 'px'}">Style Binding</div>
+    <button @click="toggleTitleStyle">Toggle Large</button>
+
     <span v-text="person.fullName"></span>
     <p>
         {{ greeting(person.fullName) }}<br>
