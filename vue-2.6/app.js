@@ -34,7 +34,8 @@ let app = new Vue({
         title: {
             color: '#000',
             size: 18,
-        }
+        },
+        show: false,
     },
     components: {
         'ime': Vue.component('ime'),
@@ -100,6 +101,9 @@ let app = new Vue({
                 this.title.color = '#000';
                 this.title.size = 18
             }
+        },
+        toggleShow() {
+            this.show = !this.show;
         },
     },
     /**
