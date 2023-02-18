@@ -1,6 +1,14 @@
 # Javascript
 
+- [Javascript](#javascript)
+  - [Install](#install)
+    - [Ubuntu 22.04](#ubuntu-2204)
+    - [Windows 11](#windows-11)
+    - [macOS](#macos)
+
 ## Install
+
+### Ubuntu 22.04
 
 - [nodejs/snap](https://github.com/nodejs/snap#installation)
   - [snap](https://nodejs.org/en/download/package-manager/#snap)
@@ -46,4 +54,20 @@ sudo kill -KILL 1055481
 ```sh
 node --version
 # v18.13.0
+```
+
+### Windows 11
+
+```ps1
+choco install nodejs --version=18.14.1
+```
+
+```ps1
+scoop install nodejs18
+```
+
+### macOS
+
+```sh
+brew install node@18
 ```
