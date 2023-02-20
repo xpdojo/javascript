@@ -61,3 +61,35 @@ code hello-world
 
 - [Docs](https://code.visualstudio.com/api/get-started/your-first-extension#debugging-the-extension)
 - `>View: Show Run and Debug`
+
+## Publishing the extension
+
+- [Publishing Extensions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
+
+```sh
+npm install -g @vscode/vsce
+```
+
+```sh
+vsce login markruler                                                                                                                                                                        ✈
+```
+
+```sh
+https://marketplace.visualstudio.com/manage/publishers/
+Personal Access Token for publisher 'markruler': ****************************************************
+
+The Personal Access Token verification succeeded for the publisher 'markruler'.
+```
+
+```sh
+vsce package
+#  DONE  Packaged: /Users/markruler/mdm/mdm-0.1.0.vsix (261 files, 634.06KB)
+```
+
+```sh
+vsce publish
+#  INFO  Publishing 'markruler.mdm v0.1.0'...
+#  INFO  Extension URL (might take a few minutes): https://marketplace.visualstudio.com/items?itemName=markruler.mdm
+#  INFO  Hub URL: https://marketplace.visualstudio.com/manage/publishers/markruler/extensions/mdm/hub
+#  DONE  Published markruler.mdm v0.1.0.
+```
