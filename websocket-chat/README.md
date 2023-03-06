@@ -1,4 +1,4 @@
-# ChatGPT가 만든 WebSocket Chat Application
+# WebSocket Chat Application
 
 ```sh
 npm install
