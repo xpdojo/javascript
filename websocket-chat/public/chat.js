@@ -5,16 +5,25 @@ const messageInput = document.querySelector('input[type="text"]');
 const sendButton = document.querySelector('input[type="submit"]');
 
 sendButton.addEventListener('click', (e) => {
-  e.preventDefault();
-  const message = messageInput.value.trim();
-  if (message) {
-    socket.emit('chat message', message);
-    messageInput.value = '';
-  }
+    e.preventDefault();
+    const message = messageInput.value.trim();
+    if (message) {
+        socket.emit('send_message', message);
+        messageInput.value = '';
+    }
 });
 
-socket.on('chat message', (msg) => {
-  const li = document.createElement('li');
-  li.textContent = msg;
-  chatBox.appendChild(li);
+socket.on('chat_history', (history) => {
+    console.log(history);
+    history.forEach((msg) => {
+        const li = document.createElement('li');
+        li.textContent = msg;
+        chatBox.appendChild(li);
+    });
+});
+
+socket.on('send_message', (message) => {
+    const li = document.createElement('li');
+    li.textContent = message;
+    chatBox.appendChild(li);
 });
