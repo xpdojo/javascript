@@ -28,6 +28,30 @@
             font-size: 30px;
         }
     </style>
+
+    <script>
+        /**
+         * IME 문제 해결방안
+         *
+         * <p>
+         *     component는 vue instance 생성하기 전에 먼저 등록해야 한다.
+         * </p>
+         *
+         * @see <a href="https://joshua1988.github.io/web-development/vuejs/v-model-usage/#v-model-%EB%AC%B8%EB%B2%95%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%B4%EC%84%9C-%ED%95%9C%EA%B5%AD%EC%96%B4%EB%A5%BC-%EC%B2%98%EB%A6%AC%ED%95%A0-%EC%88%9C-%EC%97%86%EC%9D%84%EA%B9%8C%EC%9A%94">캡틴판교</a>
+         */
+        // Vue.component(tagName, options): 전역 컴포넌트 등록
+        // https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name
+        // 네이밍은 W3C 규칙(모두 소문자, 하이픈 포함)을 지켜야 하는 건 아니지만 권장
+        Vue.component('ime', {
+            template: `<input v-bind:value="value" v-on:input="updateInput">`,
+            props: ['value'],
+            methods: {
+                updateInput(event) {
+                    this.$emit('input', event.target.value);
+                }
+            }
+        });
+    </script>
 </head>
 
 <body>
@@ -136,7 +160,38 @@
             <h3>a.href 링크 관리</h3>
             <a :href="getYoutubeChannel('@gamegalpi')">@gamegalpi</a>
         </section>
+        <section>
+            <h3>select option</h3>
+            <select v-model="categorySelected">
+                <option value="select">Choose Category</option>
+                <option v-for="(name, id) in category" :value="id" :key="id">{{name}}</option>
+            </select>
+        </section>
     </section>
+    <script>
+        new Vue({
+            el: '#input-model',
+            data: {
+                inputText: 'hello',
+                type: 'text',
+                link: 'https://www.youtube.com/',
+                categorySelected: 'select',
+                category: {
+                    1: '운영체제',
+                    2: '네트워크',
+                    3: '데이터베이스',
+                }
+            },
+            methods: {
+                getYoutubeChannel(channel) {
+                    return this.link + channel;
+                },
+                updateInputText(event) {
+                    this.inputText = event.target.value;
+                }
+            },
+        });
+    </script>
 
     <hr>
 
@@ -207,7 +262,8 @@
             않습니다.</p>
         <p>비교해보면, <code>v-show</code>는 훨씬 단순합니다. CSS 기반 토글만으로 초기 조건에 관계 없이 엘리먼트가 항상 렌더링 됩니다.</p>
         <p>일반적으로 <code>v-if</code>는 토글 비용이 높고 <code>v-show</code>는 초기 렌더링 비용이 더 높습니다. 매우 자주 바꾸기를 원한다면
-            <code>v-show</code>를, 런타임 시 조건이 바뀌지 않으면 <code>v-if</code>를 권장합니다.</p>
+            <code>v-show</code>를, 런타임 시 조건이 바뀌지 않으면 <code>v-if</code>를 권장합니다.
+        </p>
     </section>
 
     <hr>
@@ -235,11 +291,13 @@
             <h3>key를 사용해야 한다</h3>
             <p>Vue가 <code>v-for</code>에서 렌더링된 엘리먼트 목록을 갱신할 때 기본적으로 “in-place patch” 전략을 사용합니다. 데이터 항목의 순서가 변경된 경우 항목의
                 순서와 일치하도록 DOM 요소를 이동하는 대신 Vue는 각 요소를 적절한 위치에 패치하고 해당 인덱스에서 렌더링할 내용을 반영하는지 확인합니다. 이것은 Vue 1.x의
-                <code>track-by=$index</code>의 동작과 유사합니다.</p>
+                <code>track-by=$index</code>의 동작과 유사합니다.
+            </p>
             <p>이 기본 모드는 효율적이지만 <strong>목록의 출력 결과가 하위 컴포넌트 상태 또는 임시 DOM 상태(예: 폼 input)에 의존하지 않는 경우에</strong> 적합합니다.</p>
             <p>Vue에서 개별 DOM 노드들을 추적하고 기존 엘리먼트를 재사용, 재정렬하기 위해서 <code>v-for</code>의 각 항목들에 고유한 key 속성을 제공해야 합니다.
                 <code>key</code>에 대한 이상적인 값은 각 항목을 식별할 수 있는 고유한 ID입니다. 이 특별한 속성은 1.x 버전의 <code>track-by</code>와 거의 비슷하지만
-                속성처럼 작동하기 때문에 <code>v-bind</code>를 사용하여 동적 값에 바인딩 해야합니다. (여기서는 약어를 이용합니다.)</p>
+                속성처럼 작동하기 때문에 <code>v-bind</code>를 사용하여 동적 값에 바인딩 해야합니다. (여기서는 약어를 이용합니다.)
+            </p>
             <p>과일에 개수를 입력 후 shift 해보면 과일 순서는 바뀌는데 개수는 바뀌지 읺는다.</p>
             <ul>
                 <li v-for="fruitName in fruits">
@@ -281,7 +339,8 @@
             <p>모든 Vue 앱은 <code>Vue</code> 함수로 새 <strong>Vue 인스턴스</strong>를 만드는 것부터 시작합니다.</p>
             <p>엄격히 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Model_View_ViewModel">MVVM
                     패턴</a>과 관련이 없지만 Vue의 디자인은 부분적으로 그것에 영감을 받았습니다. 관례적으로, Vue 인스턴스를 참조하기 위해 종종 변수
-                <code>vm</code>(ViewModel의 약자)을 사용합니다.</p>
+                <code>vm</code>(ViewModel의 약자)을 사용합니다.
+            </p>
             <p>Vue 앱은 <code>new Vue</code>를 통해 만들어진 <code>루트 Vue 인스턴스</code>로 구성되며 선택적으로 중첩이 가능하고 재사용 가능한 컴포넌트 트리로
                 구성됩니다.</p>
             <ul>
@@ -367,28 +426,6 @@
                 },
                 subtract() {
                     return this.person.age--;
-                }
-            }
-        });
-
-        /**
-         * IME 문제 해결방안
-         *
-         * <p>
-         *     component는 vue instance 생성하기 전에 먼저 등록해야 한다.
-         * </p>
-         *
-         * @see <a href="https://joshua1988.github.io/web-development/vuejs/v-model-usage/#v-model-%EB%AC%B8%EB%B2%95%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%B4%EC%84%9C-%ED%95%9C%EA%B5%AD%EC%96%B4%EB%A5%BC-%EC%B2%98%EB%A6%AC%ED%95%A0-%EC%88%9C-%EC%97%86%EC%9D%84%EA%B9%8C%EC%9A%94">캡틴판교</a>
-         */
-        // Vue.component(tagName, options): 전역 컴포넌트 등록
-        // https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name
-        // 네이밍은 W3C 규칙(모두 소문자, 하이픈 포함)을 지켜야 하는 건 아니지만 권장
-        Vue.component('ime', {
-            template: `<input v-bind:value="value" v-on:input="updateInput">`,
-            props: ['value'],
-            methods: {
-                updateInput(event) {
-                    this.$emit('input', event.target.value);
                 }
             }
         });
