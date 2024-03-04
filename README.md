@@ -49,8 +49,13 @@ node --version
 GLIBC 라이브러리를 사용하고 있는 것이다.
 
 ```sh
-node: /lib64/libm.so.6: version `GLIBC_2.27' not found (required by node)
-node: /lib64/libc.so.6: version `GLIBC_2.28' not found (required by node)
+# node: /lib64/libm.so.6: version `GLIBC_2.27' not found (required by node)
+# node: /lib64/libc.so.6: version `GLIBC_2.28' not found (required by node)
+```
+
+```sh
+ldd --version
+# ldd (GNU libc) 2.26
 ```
 
 ## NVM으로 버전 관리하기
