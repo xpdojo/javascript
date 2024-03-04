@@ -1,12 +1,97 @@
 # Javascript
 
 - [Javascript](#javascript)
-  - [Install](#install)
+  - [nodeenv를 사용하여 가상 환경 만들기](#nodeenv를-사용하여-가상-환경-만들기)
+  - [NVM으로 버전 관리하기](#nvm으로-버전-관리하기)
+  - [Package 직접 설치](#package-직접-설치)
     - [Ubuntu 22.04](#ubuntu-2204)
     - [Windows 11](#windows-11)
     - [macOS](#macos)
 
-## Install
+## nodeenv를 사용하여 가상 환경 만들기
+
+- [ekalinin/nodeenv](https://github.com/ekalinin/nodeenv)
+
+```sh
+python3 -m venv venv
+source venv/bin/activate
+```
+
+```sh
+(venv) pip install nodeenv
+# nodeenv --version
+```
+
+- 설치 가능한 버전 확인
+
+```sh
+nodeenv --list
+```
+
+- 특정 버전 설치
+
+```sh
+# nodeenv --node=$VERSION $DEST_DIR
+nodeenv --node=21.6.2 env
+```
+
+```sh
+(env) (venv) source env/bin/activate
+```
+
+```sh
+node --version
+# v21.6.2
+```
+
+만약 다음과 같은 에러가 발생한다면
+[오래된 OS 버전](https://github.com/nodejs/node/issues/43246)이나
+GLIBC 라이브러리를 사용하고 있는 것이다.
+
+```sh
+node: /lib64/libm.so.6: version `GLIBC_2.27' not found (required by node)
+node: /lib64/libc.so.6: version `GLIBC_2.28' not found (required by node)
+```
+
+## NVM으로 버전 관리하기
+
+- [nvm](https://github.com/nvm-sh/nvm)
+
+```sh
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+```
+
+```sh
+# bash
+source ~/.bashrc
+# zsh
+source ~/.zshrc
+# ksh
+. ~/.profile
+```
+
+```sh
+nvm ls
+```
+
+```sh
+nvm use 16
+# Now using node v16.9.1 (npm v7.21.1)
+node -v
+# v16.9.1
+
+nvm use 14
+# Now using node v14.18.0 (npm v6.14.15)
+node -v
+# v14.18.0
+
+nvm install 12
+# Now using node v12.22.6 (npm v6.14.5)
+node -v
+# v12.22.6
+```
+
+## Package 직접 설치
 
 ### Ubuntu 22.04
 
