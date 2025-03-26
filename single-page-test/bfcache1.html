@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Page 1</title>
+</head>
+<body>
+  <h1>Page 1</h1>
+  <a href="bfcache2.html">Go to Page 2</a>
+
+  <script>
+    // Pages with WebSocket cannot enter back/forward cache.
+    window.addEventListener('pageshow', (event) => {
+      console.log('Page 1 pageshow. persisted:', event.persisted);
+      console.log('Page 1: pageshow', event);
+      document.body.insertAdjacentHTML("beforeend", `<p>pageshow (persisted: ${event.persisted})</p>`);
+      if (event.persisted) {
+        console.log('✅ Page 1 was restored from BFCache');
+      } else {
+        console.log('🔄 Page 1 was loaded normally');
+      }
+    });
+  </script>
+</body>
+</html>

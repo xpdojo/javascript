@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>BFCache 테스트</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    .state-box { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>BFCache 테스트</h1>
+  <p>아래 버튼을 눌러 히스토리를 추가한 후, 브라우저의 뒤로 가기를 눌러 상태 복원을 테스트하세요.</p>
+
+  <button id="push-state">pushState로 페이지 추가</button>
+  <button id="reload">페이지 강제 새로고침</button>
+
+  <div class="state-box">
+    현재 상태 ID: <span id="state-id">초기</span>
+  </div>
+
+  <script>
+    let stateCounter = 0;
+
+    const stateIdEl = document.getElementById("state-id");
+
+    // 페이지 진입 시 상태 확인
+    window.addEventListener("load", () => {
+      const state = history.state;
+      if (state && state.id != null) {
+        stateIdEl.textContent = state.id;
+      } else {
+        stateIdEl.textContent = "초기";
+      }
+
+      console.log("[load] 페이지 로드됨. 상태:", state);
+    });
+
+    // BFCache에서 복원될 때 이벤트
+    // ! 발생하지 않음.
+    window.addEventListener("pageshow", (event) => {
+      if (event.persisted) {
+        console.log("[pageshow] BFCache에서 복원됨:", history.state);
+      } else {
+        console.log("[pageshow] 일반 로드:", history.state);
+      }
+    });
+
+    // 상태 추가 버튼
+    document.getElementById("push-state").addEventListener("click", () => {
+      stateCounter++;
+      const newState = { id: stateCounter };
+      history.pushState(newState, "", `#state-${stateCounter}`);
+      stateIdEl.textContent = newState.id;
+
+      console.log("[pushState] 새 상태 추가됨:", newState);
+    });
+
+    // 새로고침
+    document.getElementById("reload").addEventListener("click", () => {
+      location.reload();
+    });
+
+    // 뒤로가기 등 popstate 감지
+    window.addEventListener("popstate", (event) => {
+      if (event.state && event.state.id != null) {
+        stateIdEl.textContent = event.state.id;
+      } else {
+        stateIdEl.textContent = "초기";
+      }
+
+      console.log("[popstate] 히스토리 변경 감지됨:", event.state);
+    });
+  </script>
+</body>
+</html>
