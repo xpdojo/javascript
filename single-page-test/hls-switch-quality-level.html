@@ -23,20 +23,50 @@
     const cdn = 'https://test-streams.mux.dev/';
     const key = 'x36xhzz/x36xhzz.m3u8';
     const videoSrc = cdn + key;
+
+    let initialLevel = 0; // 기본적으로 가장 낮은 화질 레벨 선택
+    // https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation/downlink
+    //console.debug(`navigator.connection.downlinkMax = ${navigator.connection?.downlinkMax}`);
+    //console.debug(`navigator.connection.downlink = ${navigator.connection?.downlink}`);
+    //if (navigator.connection && navigator?.connection?.downlink >= 10) { // 예시: 10Mbps 이상
+    //  initialLevel = 1; // 높은 화질 레벨 선택
+    //}
     if (Hls.isSupported() && (key.includes('.M3U') || key.includes('.m3u'))) {
       let hls = new Hls({
-          // https://github.com/video-dev/hls.js/blob/master/docs/API.md
-          debug: true,
-          capLevelToPlayerSize: true, // 플레이어 크기에 맞게 화질 조정
-          autoLevelEnabled: true, // 자동으로 가장 높은 화질로 재생
-          // startLevel: 0, // 시작 화질 (지정하면 자동 레벨 조정 후 2번 다운로드하게 됨)
-          autoStartLoad: true, // 첫번째 조각 로드함.
-          startPosition: -1,
+        // https://github.com/video-dev/hls.js/blob/master/docs/API.md
+        //debug: true,
+        capLevelToPlayerSize: true, // 플레이어 크기에 맞게 화질 조정
+        autoLevelEnabled: true, // 자동으로 가장 높은 화질로 재생
+        // autoStartLoad: true, // 첫번째 조각 로드함.
+
+        // 초기 레벨(default) 다운로드 후 자동 레벨 조정하기 때문에 2번 다운로드하게 됨
+        startLevel: initialLevel, // 시작 화질 (default: -1)
+        //abrEwmaDefaultEstimate: 1_500_000, // 초기 비트레이트 (default: 5_000_000)
+        //startPosition: -1,
       });
       hls.loadSource(videoSrc);
       hls.attachMedia(video);
-      console.log(hls.levels);
-      console.log(hls.currentLevel);
+
+      // https://github.com/video-dev/hls.js/blob/master/docs/API.md#runtime-events
+      console.log(Hls.Events);
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        console.log(hls);
+        console.log(hls.levels); // 전체 레벨 정보
+        console.log(hls.currentLevel); // 현재 레벨
+        console.log(hls.abrController.bwEstimator.getEstimate()); // 추정 Bandwidth
+
+        //const estimatedBw = hls.abrController.bwEstimator.getEstimate();
+        //console.log(`Estimated Bandwidth: ${estimatedBw}`);
+        //if (estimatedBw > 9_000_000) {
+        //  hls.startLevel = hls.levels.length - 1; // 가장 높은 화질
+        //} else if (estimatedBw > 5_000_000) {
+        //  hls.startLevel = hls.levels.length - 2;
+        //} else {
+        //  hls.startLevel = 0;
+        //}
+
+        console.log(`Estimated Bandwidth: ${estimatedBw}, Selected Start Level: ${hls.startLevel}`);
+      });
     }
     // HLS.js is not supported on platforms that do not have Media Source
     // Extensions (MSE) enabled.
