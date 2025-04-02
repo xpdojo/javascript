@@ -6,3 +6,11 @@ node_modules/
 # Virtual Environments
 venv/
 env/
+
+# font files
+*.ttf
+*.otf
+*.woff
+*.woff2
+*.eot
+*.svg

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한글 지원 폰트 테스트</title>
+    <style>
+        .font-test {
+            font-size: 24px;
+            width: 90%;
+            height: 300px;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-feature-settings: "kern" 0, "liga" 0, "calt" 0, "pnum" 0, "tnum" 1, "onum" 0, "lnum" 0, "dlig" 0, "hlig" 0;
+            font-kerning: none;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: none;
+            -moz-osx-font-smoothing: none;
+        }
+
+        .controls {
+            margin: 20px;
+        }
+
+        select {
+            padding: 5px;
+            margin-right: 10px;
+            min-width: 200px;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+        }
+
+        .font-info {
+            margin: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .fallback-info {
+            margin: 20px;
+            padding: 10px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 5px;
+            color: #856404;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .file-label:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <label class="file-label">
+            폰트 파일 선택 (여러 개)
+            <input type="file" id="fontFile" class="file-input" accept=".ttf,.otf" multiple>
+        </label>
+
+        <label for="fontSelect">선택된 폰트:</label>
+        <select id="fontSelect">
+            <option value="">폰트를 선택하세요</option>
+        </select>
+
+        <label for="fontSize">폰트 크기:</label>
+        <input type="number" id="fontSize" value="24" min="8" max="72">
+        
+        <label for="fontWeight">폰트 굵기:</label>
+        <select id="fontWeight">
+            <option value="normal">normal</option>
+            <option value="bold">bold</option>
+            <option value="lighter">lighter</option>
+        </select>
+
+        <label for="fontStyle">폰트 스타일:</label>
+        <select id="fontStyle">
+            <option value="normal">normal</option>
+            <option value="italic">italic</option>
+        </select>
+    </div>
+
+    <div class="font-info" id="fontInfo">
+        선택된 폰트: 없음
+    </div>
+
+    <div class="fallback-info" id="fallbackInfo">
+        폰트 지원 여부: 확인 중...
+    </div>
+
+    <div class="font-test" id="testText">
+        안녕하세요! 이것은 테스트 텍스트입니다.<br>
+        Hello! This is a test text.<br>
+        한글 자음: ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ<br>
+        한글 모음: ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ
+    </div>
+
+    <script>
+        class FontTester {
+            constructor() {
+                this.elements = {
+                    fontFile: document.getElementById('fontFile'),
+                    fontSelect: document.getElementById('fontSelect'),
+                    testText: document.getElementById('testText'),
+                    fontSize: document.getElementById('fontSize'),
+                    fontWeight: document.getElementById('fontWeight'),
+                    fontStyle: document.getElementById('fontStyle'),
+                    fontInfo: document.getElementById('fontInfo'),
+                    fallbackInfo: document.getElementById('fallbackInfo')
+                };
+
+                this.state = {
+                    selectedFonts: [],
+                    currentFontUrl: null
+                };
+
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                this.elements.fontFile.addEventListener('change', this.handleFontFileSelect.bind(this));
+                this.elements.fontSelect.addEventListener('change', this.handleFontSelect.bind(this));
+                this.elements.fontSize.addEventListener('input', () => this.updateFontSize());
+                this.elements.fontWeight.addEventListener('change', () => this.updateFontWeight());
+                this.elements.fontStyle.addEventListener('change', () => this.updateFontStyle());
+            }
+
+            async checkFontSupport() {
+                const testString = '가나다라마바사';
+                const fallbackFont = 'sans-serif';
+                
+                if (!await document.fonts.check('12px SelectedFont')) {
+                    this.elements.fallbackInfo.textContent = '폰트 로딩 실패';
+                    return;
+                }
+
+                const testElement = this.createTestElement(testString);
+                const fallbackWidth = this.getTextWidth(testElement, fallbackFont);
+                const selectedWidth = this.getTextWidth(testElement, 'SelectedFont');
+                document.body.removeChild(testElement);
+
+                const isSupported = Math.abs(fallbackWidth - selectedWidth) > 1;
+                this.elements.fallbackInfo.textContent = 
+                    `폰트 지원 여부: ${isSupported ? '한글 지원' : '한글 미지원 (폴백 폰트 사용 중)'}`;
+            }
+
+            createTestElement(text) {
+                const element = document.createElement('div');
+                Object.assign(element.style, {
+                    fontFamily: 'SelectedFont',
+                    fontSize: '24px',
+                    position: 'absolute',
+                    visibility: 'hidden'
+                });
+                element.textContent = text;
+                document.body.appendChild(element);
+                return element;
+            }
+
+            getTextWidth(element, fontFamily) {
+                element.style.fontFamily = fontFamily;
+                return element.offsetWidth;
+            }
+
+            resetFont() {
+                if (this.state.currentFontUrl) {
+                    URL.revokeObjectURL(this.state.currentFontUrl);
+                    this.state.currentFontUrl = null;
+                }
+
+                this.elements.testText.style.fontFamily = 'sans-serif';
+                this.elements.fontInfo.textContent = '선택된 폰트: 없음';
+                this.elements.fallbackInfo.textContent = '폰트 지원 여부: 확인 중...';
+                document.fonts.clear();
+            }
+
+            async updateFont(fontFile) {
+                this.resetFont();
+                if (!fontFile) return;
+
+                const fontName = fontFile.name.replace(/\.(ttf|otf)$/i, '');
+                this.state.currentFontUrl = URL.createObjectURL(fontFile);
+                
+                try {
+                    const fontFace = new FontFace('SelectedFont', `url(${this.state.currentFontUrl})`);
+                    const loadedFont = await fontFace.load();
+                    document.fonts.add(loadedFont);
+                    
+                    this.elements.testText.style.fontFamily = 'SelectedFont';
+                    this.elements.fontInfo.textContent = `선택된 폰트: ${fontName}`;
+                    await this.checkFontSupport();
+                } catch (err) {
+                    console.error('폰트 로딩 실패:', err);
+                    this.elements.fontInfo.textContent = '폰트 로딩 실패';
+                    this.elements.fallbackInfo.textContent = '폰트 로딩 실패';
+                }
+            }
+
+            handleFontFileSelect(e) {
+                const files = Array.from(e.target.files).filter(file => 
+                    file.type.match(/font|ttf|otf/) || file.name.match(/\.(ttf|otf)$/i)
+                );
+
+                if (files.length === 0) {
+                    alert('올바른 폰트 파일을 선택해주세요.');
+                    return;
+                }
+
+                this.elements.fontSelect.innerHTML = '<option value="">폰트를 선택하세요</option>';
+                this.state.selectedFonts = [];
+
+                files.forEach(file => {
+                    const option = document.createElement('option');
+                    option.value = file.name;
+                    option.textContent = file.name.replace(/\.(ttf|otf)$/i, '');
+                    this.elements.fontSelect.appendChild(option);
+                    this.state.selectedFonts.push(file);
+                });
+
+                if (this.state.selectedFonts.length > 0) {
+                    this.updateFont(this.state.selectedFonts[0]);
+                }
+            }
+
+            handleFontSelect(e) {
+                const selectedIndex = e.target.selectedIndex - 1;
+                if (selectedIndex >= 0 && this.state.selectedFonts[selectedIndex]) {
+                    this.updateFont(this.state.selectedFonts[selectedIndex]);
+                }
+            }
+
+            updateFontSize() {
+                this.elements.testText.style.fontSize = `${this.elements.fontSize.value}px`;
+            }
+
+            updateFontWeight() {
+                this.elements.testText.style.fontWeight = this.elements.fontWeight.value;
+            }
+
+            updateFontStyle() {
+                this.elements.testText.style.fontStyle = this.elements.fontStyle.value;
+            }
+        }
+
+        // 앱 초기화
+        new FontTester();
+    </script>
+</body>
+</html>
