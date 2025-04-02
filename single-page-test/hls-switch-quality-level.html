@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #hls-example {
+      width: 100%;
+      max-width: 1920px;
+    }
+  </style>
+</head>
+
+<body>
+  <video id="hls-example" controls autoplay></video>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+  <script>
+    // https://github.com/video-dev/hls.js
+    // https://hlsjs.video-dev.org/demo/
+    let video = document.getElementById('hls-example');
+    const cdn = 'https://test-streams.mux.dev/';
+    const key = 'x36xhzz/x36xhzz.m3u8';
+    const videoSrc = cdn + key;
+    if (Hls.isSupported() && (key.includes('.M3U') || key.includes('.m3u'))) {
+      let hls = new Hls({
+          // https://github.com/video-dev/hls.js/blob/master/docs/API.md
+          debug: true,
+          capLevelToPlayerSize: true, // 플레이어 크기에 맞게 화질 조정
+          autoLevelEnabled: true, // 자동으로 가장 높은 화질로 재생
+          // startLevel: 0, // 시작 화질 (지정하면 자동 레벨 조정 후 2번 다운로드하게 됨)
+          autoStartLoad: true, // 첫번째 조각 로드함.
+          startPosition: -1,
+      });
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
+      console.log(hls.levels);
+      console.log(hls.currentLevel);
+    }
+    // HLS.js is not supported on platforms that do not have Media Source
+    // Extensions (MSE) enabled.
+    //
+    // When the browser has built-in HLS support (check using `canPlayType`),
+    // we can provide an HLS manifest (i.e. .m3u8 URL) directly to the video
+    // element through the `src` property. This is using the built-in support
+    // of the plain video element, without using HLS.js.
+    // else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    // else if (video.canPlayType('application/mpegurl')) {
+    else {
+      video.src = videoSrc;
+    }
+  </script>
+</body>
+
+</html>
