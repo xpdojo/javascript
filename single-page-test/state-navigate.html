@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History State SPA</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    .page {
+      display: none;
+    }
+    .page.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <button data-page="home">Home</button>
+    <button data-page="about">About</button>
+    <button data-page="contact">Contact</button>
+  </nav>
+
+  <div id="content">
+    <div id="home" class="page active">
+      <h1>Home Page</h1>
+      <p>Welcome to the home page!</p>
+      <input type="text" id="home-input" placeholder="Enter text here">
+    </div>
+    <div id="about" class="page">
+      <h1>About Page</h1>
+      <p>Learn more about us.</p>
+      <input type="text" id="about-input" placeholder="Enter text here">
+    </div>
+    <div id="contact" class="page">
+      <h1>Contact Page</h1>
+      <p>Get in touch with us.</p>
+      <input type="text" id="contact-input" placeholder="Enter text here">
+    </div>
+  </div>
+
+  <script>
+    const contentDiv = document.getElementById('content');
+    const navButtons = document.querySelectorAll('nav button');
+    const pages = document.querySelectorAll('.page');
+
+    function navigate(pageId, options = {}) {
+      const { replace = false } = options;
+
+      pages.forEach(page => page.classList.remove('active'));
+
+      const pageToShow = document.getElementById(pageId);
+      if (pageToShow) {
+        pageToShow.classList.add('active');
+
+        const state = { page: pageId, inputValues: getInputValues() };
+        
+        if (replace) {
+          history.replaceState(state, '', `#${pageId}`);
+        } else {
+          history.pushState(state, '', `#${pageId}`);
+        }
+      }
+    }
+
+    function getInputValues() {
+      const inputValues = {};
+      pages.forEach(page => {
+        const input = page.querySelector('input');
+        if (input) {
+          inputValues[page.id] = input.value;
+        }
+      });
+      return inputValues;
+    }
+
+    function setInputValues(inputValues) {
+      for (const pageId in inputValues) {
+        const page = document.getElementById(pageId);
+        if (page) {
+          const input = page.querySelector('input');
+          if (input) {
+            input.value = inputValues[pageId];
+          }
+        }
+      }
+    }
+
+    navButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const pageId = button.dataset.page;
+        navigate(pageId);
+      });
+    });
+
+    window.addEventListener('popstate', (event) => {
+      if (event.state) {
+        navigate(event.state.page, { replace: true });
+        setInputValues(event.state.inputValues);
+      }
+    });
+
+    // Initial page load
+    const initialPage = window.location.hash ? window.location.hash.substring(1) : 'home';
+    navigate(initialPage, { replace: true });
+  </script>
+</body>
+</html>
