@@ -14,12 +14,12 @@
 </head>
 
 <body>
-  <video id="hls-example" controls autoplay></video>
+  <video id="hls-example" controls></video>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
   <script>
     // https://github.com/video-dev/hls.js
     // https://hlsjs.video-dev.org/demo/
-    let video = document.getElementById('hls-example');
+    const player = document.getElementById('hls-example');
     const cdn = 'https://test-streams.mux.dev/';
     const key = 'x36xhzz/x36xhzz.m3u8';
     const videoSrc = cdn + key;
@@ -34,26 +34,51 @@
     if (Hls.isSupported() && (key.includes('.M3U') || key.includes('.m3u'))) {
       let hls = new Hls({
         // https://github.com/video-dev/hls.js/blob/master/docs/API.md
-        //debug: true,
+        debug: true,
         capLevelToPlayerSize: true, // 플레이어 크기에 맞게 화질 조정
         autoLevelEnabled: true, // 자동으로 가장 높은 화질로 재생
-        // autoStartLoad: true, // 첫번째 조각 로드함.
 
+        // https://github.com/video-dev/hls.js/issues/2671
+        // 로딩 버퍼 사이즈 제한
+        autoStartLoad: false, // 첫번째 조각 로드함 (default: true)
+        maxBufferLength: 20,
+        maxBufferSize: 8 * 1024 * 1024,
+        backBufferLength: 6,
         // 초기 레벨(default) 다운로드 후 자동 레벨 조정하기 때문에 2번 다운로드하게 됨
         startLevel: initialLevel, // 시작 화질 (default: -1)
         //abrEwmaDefaultEstimate: 1_500_000, // 초기 비트레이트 (default: 5_000_000)
         //startPosition: -1,
       });
       hls.loadSource(videoSrc);
-      hls.attachMedia(video);
+      hls.attachMedia(player);
+      // https://github.com/video-dev/hls.js/issues/2671
+      // 비디오 중지할 경우 추가 로드하지 않도록 제한
+      ['play'].forEach(function (event) {
+        player.addEventListener(event, function() {
+          hls.startLoad();
+        });
+      });
+      ['loadedmetadata', 'pause'].forEach(function (event) {
+        player.addEventListener(event, function() {
+          hls.stopLoad();
+        });
+      });
 
       // https://github.com/video-dev/hls.js/blob/master/docs/API.md#runtime-events
       console.log(Hls.Events);
+
+      // subscribe event
+      hls.on(Hls.Events.LEVEL_LOADED, function (event, data) {
+        console.debug(`LEVEL_LOADED: ${event}`);
+      });
+
       hls.on(Hls.Events.MANIFEST_PARSED, function () {
-        console.log(hls);
-        console.log(hls.levels); // 전체 레벨 정보
-        console.log(hls.currentLevel); // 현재 레벨
-        console.log(hls.abrController.bwEstimator.getEstimate()); // 추정 Bandwidth
+        hls.startLoad();
+
+        console.debug(hls);
+        console.debug(hls.levels); // 전체 레벨 정보
+        console.debug(hls.currentLevel); // 현재 레벨
+        console.debug(hls.abrController.bwEstimator.getEstimate()); // 추정 Bandwidth
 
         //const estimatedBw = hls.abrController.bwEstimator.getEstimate();
         //console.log(`Estimated Bandwidth: ${estimatedBw}`);
@@ -65,7 +90,7 @@
         //  hls.startLevel = 0;
         //}
 
-        console.log(`Estimated Bandwidth: ${estimatedBw}, Selected Start Level: ${hls.startLevel}`);
+        // console.log(`Estimated Bandwidth: ${estimatedBw}, Selected Start Level: ${hls.startLevel}`);
       });
     }
     // HLS.js is not supported on platforms that do not have Media Source
@@ -78,7 +103,7 @@
     // else if (video.canPlayType('application/vnd.apple.mpegurl')) {
     // else if (video.canPlayType('application/mpegurl')) {
     else {
-      video.src = videoSrc;
+      player.src = videoSrc;
     }
   </script>
 </body>
