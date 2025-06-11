@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+</head>
+
+<body>
+    <h2>채팅방: <span id="roomId">room1</span></h2>
+    <div id="chat-box" style="border:1px solid #ccc; height:300px; overflow-y:auto; padding:10px;"></div>
+    <input type="text" id="message" placeholder="메시지를 입력하세요..." />
+    <button onclick="sendMessage()">전송</button>
+
+    <script>
+        // const HOST = 'http://192.168.0.20:18080';
+        const HOST = 'http://localhost:18080';
+        const roomId = 'ddd'; // 고정값이지만 동적으로 설정 가능
+        const username = 'User' + Math.floor(Math.random() * 1000);
+        let stompClient;
+
+        function connect() {
+            const socket = new SockJS(`${HOST}/chat/connect`);
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function () {
+                stompClient.subscribe("/chat/rooms/" + roomId, function (message) {
+                    const msg = JSON.parse(message.body);
+                    console.log(msg);
+                    const content = `${msg.sender}: ${msg.content}`;
+                    const chatBox = document.getElementById('chat-box');
+                    chatBox.innerHTML += `<div>${content}</div>`;
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                });
+
+                stompClient.send("/chat", {}, JSON.stringify({
+                    roomId: roomId,
+                    sender: username,
+                    content: 'Hello World',
+                    type: 'JOIN'
+                }));
+            });
+        }
+
+        function sendMessage() {
+            const content = document.getElementById('message').value;
+            stompClient.send("/chat", {}, JSON.stringify({
+                roomId: roomId,
+                sender: username,
+                content: content,
+                type: 'CHAT'
+            }));
+            document.getElementById('message').value = '';
+        }
+
+        connect();
+    </script>
+</body>
+
+</html>
