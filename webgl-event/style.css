@@ -1,0 +1,21 @@
+body {
+  margin: 0;
+  padding: 20px;
+  background: #1a1a1a;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+canvas {
+  border: 2px solid #444;
+  cursor: crosshair;
+}
+
+.info {
+  margin-top: 10px;
+  text-align: center;
+  color: #aaa;
+}
