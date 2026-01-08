@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="wasm/math.js"></script>
+  <script>
+    // Emscripten이 준비되면 호출됩니다.
+    Module.onRuntimeInitialized = _ => {
+      const input = 13;
+      // C++의 square 함수 호출
+      const square = Module._square(input);
+      const result = document.createElement('div');
+      result.textContent = `${input}의 제곱은: ${square}`
+      document.querySelector('#app').appendChild(result);
+    };
+  </script>
+</body>
+</html>
