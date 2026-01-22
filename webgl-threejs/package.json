@@ -1,0 +1,21 @@
+{
+  "name": "webgl-threejs",
+  "version": "1.0.0",
+  "description": "Three.js를 활용한 GLB 파일 렌더링 및 상호작용 프로젝트",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": ["three.js", "webgl", "glb", "3d"],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.6.5",
+  "dependencies": {
+    "three": "^0.182.0"
+  },
+  "devDependencies": {
+    "vite": "^7.3.1"
+  }
+}

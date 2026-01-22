@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three.js GLTF/GLB Viewer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      overflow: hidden;
+      background: #1a1a1a;
+    }
+
+    #canvas-container {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #info {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: white;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 100;
+      max-width: 300px;
+    }
+
+    #info h2 {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    #info ul {
+      list-style: none;
+      margin-top: 10px;
+    }
+
+    #info li {
+      margin: 5px 0;
+    }
+
+    #file-input-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+
+    #file-input {
+      display: none;
+    }
+
+    .file-input-label {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+
+    .file-input-label:hover {
+      background: #45a049;
+    }
+
+    #loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 18px;
+      z-index: 100;
+      display: none;
+    }
+
+    #loading.show {
+      display: block;
+    }
+
+    #controls {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px 20px;
+      border-radius: 8px;
+      color: white;
+    }
+
+    #controls h3 {
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .control-button {
+      display: inline-block;
+      padding: 8px 16px;
+      margin: 5px;
+      background: #555;
+      color: white;
+      border: 2px solid #777;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.3s;
+      user-select: none;
+    }
+
+    .control-button:hover {
+      background: #666;
+      border-color: #888;
+    }
+
+    .control-button.active {
+      background: #4CAF50;
+      border-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  
+  <div id="info">
+    <h2>Three.js GLTF/GLB Viewer</h2>
+    <p>GLTF 또는 GLB 파일을 로드하여 3D 모델을 확인할 수 있습니다.</p>
+    <p style="font-size: 12px; margin-top: 5px; color: #aaa;">
+      GLTF 파일의 경우 관련 리소스 파일(.bin, 텍스처)도 함께 선택하세요.
+    </p>
+    <ul>
+      <li>🖱️ 왼쪽 클릭 + 드래그: 회전</li>
+      <li>🖱️ 오른쪽 클릭 + 드래그: 패닝</li>
+      <li>🖱️ 휠: 줌 인/아웃</li>
+    </ul>
+  </div>
+
+  <div id="file-input-container">
+    <label for="file-input" class="file-input-label">
+      GLTF/GLB 파일 선택
+    </label>
+    <input type="file" id="file-input" accept=".glb,.gltf,.bin,.jpg,.jpeg,.png" multiple />
+  </div>
+
+  <div id="loading">로딩 중...</div>
+
+  <div id="controls">
+    <h3>표시 옵션</h3>
+    <button id="edges-toggle" class="control-button">Edge</button>
+    <button id="vertices-toggle" class="control-button">Vertex</button>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

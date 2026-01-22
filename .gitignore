@@ -1,4 +1,5 @@
 node_modules/
+dist/
 *.http
 .idea/
 .DS_Store
