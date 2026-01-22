@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package calculator;
+
+// 계산기 서비스 정의
+service Calculator {
+  // 두 숫자를 더하기
+  rpc Add(AddRequest) returns (AddResponse);
+
+  // 두 숫자를 빼기
+  rpc Subtract(SubtractRequest) returns (SubtractResponse);
+
+  // 두 숫자를 곱하기
+  rpc Multiply(MultiplyRequest) returns (MultiplyResponse);
+
+  // 두 숫자를 나누기
+  rpc Divide(DivideRequest) returns (DivideResponse);
+}
+
+// 요청 메시지
+message AddRequest {
+  double a = 1;
+  double b = 2;
+}
+
+message SubtractRequest {
+  double a = 1;
+  double b = 2;
+}
+
+message MultiplyRequest {
+  double a = 1;
+  double b = 2;
+}
+
+message DivideRequest {
+  double a = 1;
+  double b = 2;
+}
+
+// 응답 메시지
+message AddResponse {
+  double result = 1;
+}
+
+message SubtractResponse {
+  double result = 1;
+}
+
+message MultiplyResponse {
+  double result = 1;
+}
+
+message DivideResponse {
+  double result = 1;
+}

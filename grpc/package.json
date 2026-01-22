@@ -1,0 +1,19 @@
+{
+  "name": "grpc-example",
+  "version": "1.0.0",
+  "description": "간단한 gRPC 예제 프로젝트",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "client": "node client.js",
+    "test": "node test.js"
+  },
+  "keywords": ["grpc", "nodejs"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.9.14",
+    "@grpc/proto-loader": "^0.7.10"
+  }
+}
