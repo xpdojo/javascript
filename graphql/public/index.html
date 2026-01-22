@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphQL 사용자 관리</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 GraphQL 사용자 관리</h1>
+            <p>GraphQL API를 테스트하고 사용자를 조회해보세요</p>
+        </header>
+
+        <div class="content">
+            <div class="query-section">
+                <h2>쿼리 실행</h2>
+                <div class="query-buttons">
+                    <button onclick="runQuery('hello')" class="btn btn-primary">Hello 쿼리</button>
+                    <button onclick="runQuery('user')" class="btn btn-primary">사용자 조회 (ID: 1)</button>
+                    <button onclick="runQuery('users')" class="btn btn-primary">전체 사용자 조회</button>
+                </div>
+                <div class="query-editor">
+                    <label for="queryInput">GraphQL 쿼리:</label>
+                    <textarea id="queryInput" rows="8" placeholder="GraphQL 쿼리를 입력하세요...">{
+  hello
+}</textarea>
+                    <button onclick="executeCustomQuery()" class="btn btn-success">실행</button>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h2>결과</h2>
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>쿼리 실행 중...</p>
+                </div>
+                <div id="result" class="result-box">
+                    <p class="placeholder">위의 버튼을 클릭하거나 쿼리를 입력하여 실행하세요</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>GraphQL 엔드포인트: <code>/graphql</code></p>
+        </footer>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>
